@@ -1,0 +1,8 @@
+stations:
+apple,1,1
+banana,2,2
+apple,3,3
+
+connections:
+apple-banana
+banana-cherry
