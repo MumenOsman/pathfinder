@@ -50,8 +50,7 @@ func ParseNetwork(r io.Reader) (*model.Graph, error) {
 		if mode == "stations" {
 			parts := strings.Split(line, ",")
 			if len(parts) != 3 {
-				// We don't want to error out blindly if it's missing comma separation because it might be invalid connection format before connections: is stated.
-				// But as per instructions, it's strictly formatted.
+				// Station formats are strictly predefined as name,x,y
 				return nil, fmt.Errorf("line %d: invalid station line: %s", lineNumber, line)
 			}
 			name := strings.TrimSpace(parts[0])
@@ -74,7 +73,7 @@ func ParseNetwork(r io.Reader) (*model.Graph, error) {
 				}
 			}
 
-			// check coordinates duplication
+			// Validate spatial coordinate uniqueness across the station grid
 			coordKey := xStr + "," + yStr
 			if coordMap[coordKey] {
 				return nil, fmt.Errorf("line %d: two stations exist at the exact same coordinate location: %s", lineNumber, coordKey)
@@ -86,6 +85,7 @@ func ParseNetwork(r io.Reader) (*model.Graph, error) {
 				return nil, fmt.Errorf("line %d: duplicate station names: %s", lineNumber, name)
 			}
 
+			// Graph limitation constraints per project topology rules
 			if len(graph.Stations) > 10000 {
 				return nil, fmt.Errorf("line %d: a map contains more than 10000 stations", lineNumber)
 			}

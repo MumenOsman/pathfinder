@@ -15,11 +15,11 @@ func main() {
 		os.Exit(1)
 	}
 
-	// The instructions say "Additional command line arguments can be used to power extras and bonuses. But these must be operational. The program must not ignore additional arguments."
-	// We'll allow >5 args if they are valid flags, otherwise we'll consider it an error. For simplicity, we just allow exactly 5.
-	// We'll just enforce len == 5 to be strictly compliant, as we have no extra bonuses utilizing arguments right now.
-	// Oh wait, the prompt says "displays Error when too many command line arguments are used." so we must enforce len == 5, unless we choose to implement a specific flag bonus. Let's just enforce exactly 5.
-
+	// Strictly limit to 5 arguments as bonuses are not implemented
+	if len(os.Args) > 5 {
+		fmt.Fprintln(os.Stderr, "Error: Incorrect number of command line arguments (too many)")
+		os.Exit(1)
+	}
 	networkMapFile := os.Args[1]
 	startStation := os.Args[2]
 	endStation := os.Args[3]
@@ -36,6 +36,7 @@ func main() {
 		os.Exit(1)
 	}
 
+	// Read and parse the target network graph map
 	file, err := os.Open(networkMapFile)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "Error: cannot open file %s\n", networkMapFile)
@@ -58,6 +59,7 @@ func main() {
 		os.Exit(1)
 	}
 
+	// Discover node and edge disjoint paths ensuring absolute efficiency
 	paths, err := algo.FindDisjointPaths(graph, startStation, endStation)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "Error: %v\n", err)
@@ -69,6 +71,7 @@ func main() {
 		os.Exit(1)
 	}
 
+	// Calculate iterative train dispatches and output movements turn by turn
 	err = simulation.Simulate(paths, numTrains)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "Error: %v\n", err)
