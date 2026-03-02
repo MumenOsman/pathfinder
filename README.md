@@ -9,6 +9,10 @@ Pathfinder is a highly robust and mathematically optimized train routing simulat
 - Robust iterative Breadth-First Searches evaluating both Node-Disjoint and strictly Edge-Disjoint pathways, guaranteeing mathematically perfect routes across heavily congested areas.
 - Automated Load-Balancers distributing traffic intelligently between short high-traffic parallel lanes and alternative longer sweeping routes based on train volume vs transit delays.
 
+## Algorithms Used
+
+1. **Iterative Breadth-First Search (BFS)**: Central to the `algo` package, it iteratively discovers routes from start to end. With each successful discovery, its specific nodes and edges are added to a "forbidden" map, allowing subsequent BFS iterations to strictly discover node-disjoint and edge-disjoint paths, natively avoiding network collisions and infinite loops.
+2. **Greedy Load-Balancing (Simulation)**: Once all independent paths are mapped, the simulation calculates the optimal distribution of $N$ trains. It greedily assigns each train to the path that yields the earliest absolute arrival time (offsetting path length by current queue congestion), guaranteeing the fewest possible turns.
 ## Build and Run
 
 You'll need an active Go runtime environment on your machine.
