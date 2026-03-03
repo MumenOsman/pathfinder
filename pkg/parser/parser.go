@@ -8,6 +8,7 @@ import (
 	"pathfinder/pkg/model"
 	"strconv"
 	"strings"
+	"unicode"
 )
 
 // ParseNetwork reads the input from the provided reader and returns the constructed Graph.
@@ -68,7 +69,7 @@ func ParseNetwork(r io.Reader) (*model.Graph, error) {
 
 			// Validate name format
 			for _, r := range name {
-				if !((r >= 'a' && r <= 'z') || (r >= 'A' && r <= 'Z') || (r >= '0' && r <= '9') || r == '_') {
+				if !unicode.IsLetter(r) && !unicode.IsDigit(r) && r != '_' {
 					return nil, fmt.Errorf("line %d: invalid station names: %s", lineNumber, name)
 				}
 			}
