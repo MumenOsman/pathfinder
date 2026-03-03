@@ -23,19 +23,19 @@ func TestEndToEndErrors(t *testing.T) {
 		{
 			name:           "Too few arguments",
 			args:           []string{"arg1", "arg2"},
-			expectedErr:    "Error: Incorrect number of command line arguments (too few)",
+			expectedErr:    "Error: Too few command line arguments",
 			expectExitCode: 1,
 		},
 		{
 			name:           "Invalid number of trains",
 			args:           []string{"network.map", "start", "end", "abc"},
-			expectedErr:    "Error: the number of trains is not a valid positive integer",
+			expectedErr:    "Error: Invalid number of trains",
 			expectExitCode: 1,
 		},
 		{
 			name:           "Same start and end station",
 			args:           []string{"network.map", "stationA", "stationA", "5"},
-			expectedErr:    "Error: the start and end station are the same",
+			expectedErr:    "Error: Start and end station are the same",
 			expectExitCode: 1,
 		},
 		{
@@ -47,19 +47,19 @@ func TestEndToEndErrors(t *testing.T) {
 		{
 			name:           "Start station does not exist",
 			args:           []string{"network_beethoven.map", "nowhere", "part", "5"},
-			expectedErr:    "Error: the start station does not exist",
+			expectedErr:    "Error: Start station does not exist",
 			expectExitCode: 1,
 		},
 		{
 			name:           "End station does not exist",
 			args:           []string{"network_small_large.map", "small", "nowhere", "5"},
-			expectedErr:    "Error: the end station does not exist",
+			expectedErr:    "Error: End station does not exist",
 			expectExitCode: 1,
 		},
 		{
 			name:           "Trigger parsing error (duplicate)",
 			args:           []string{"network_error_test.map", "apple", "banana", "5"},
-			expectedErr:    "Error: line 4: duplicate station names: apple",
+			expectedErr:    "Error: Line 4: Duplicate station names: apple",
 			expectExitCode: 1,
 		},
 	}
@@ -94,7 +94,7 @@ func TestPerformanceAndLogic(t *testing.T) {
 		{
 			name:          "Jungle to Desert (10 trains)",
 			args:          []string{"network_jungle.map", "jungle", "desert", "10"},
-			expectedTurns: 9,
+			expectedTurns: 8,
 		},
 		{
 			name:          "Beginning to Terminus (20 trains)",

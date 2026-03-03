@@ -27,7 +27,7 @@ func NewGraph() *Graph {
 // It should return an error if the station already exists.
 func (g *Graph) AddStation(name string, x, y int) error {
 	if _, exists := g.Stations[name]; exists {
-		return errors.New("duplicate station names: " + name)
+		return errors.New("Duplicate station names: " + name)
 	}
 	g.Stations[name] = &Station{
 		Name: name,
@@ -41,18 +41,18 @@ func (g *Graph) AddStation(name string, x, y int) error {
 // It should return an error if either station does not exist or if the connection already exists.
 func (g *Graph) AddConnection(from, to string) error {
 	if _, exists := g.Stations[from]; !exists {
-		return errors.New("a connection is made with a station which does not exist: " + from)
+		return errors.New("Connection is made with a station which does not exist: " + from)
 	}
 	if _, exists := g.Stations[to]; !exists {
-		return errors.New("a connection is made with a station which does not exist: " + to)
+		return errors.New("Connection is made with a station which does not exist: " + to)
 	}
 	if from == to {
-		return errors.New("duplicate connection between " + from + " and " + to)
+		return errors.New("Duplicate connection between " + from + " and " + to)
 	}
 
 	for _, conn := range g.Connections[from] {
 		if conn == to {
-			return errors.New("duplicate routes exist between two stations, including in reverse: " + from + "-" + to)
+			return errors.New("Duplicate routes exist between two stations, including in reverse: " + from + "-" + to)
 		}
 	}
 

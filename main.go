@@ -11,13 +11,13 @@ import (
 
 func main() {
 	if len(os.Args) < 5 {
-		fmt.Fprintln(os.Stderr, "Error: Incorrect number of command line arguments (too few)")
+		fmt.Fprintln(os.Stderr, "Error: Too few command line arguments")
 		os.Exit(1)
 	}
 
 	// Strictly limit to 5 arguments as bonuses are not implemented
 	if len(os.Args) > 5 {
-		fmt.Fprintln(os.Stderr, "Error: Incorrect number of command line arguments (too many)")
+		fmt.Fprintln(os.Stderr, "Error: Too many command line arguments")
 		os.Exit(1)
 	}
 	networkMapFile := os.Args[1]
@@ -27,12 +27,12 @@ func main() {
 
 	numTrains, err := strconv.Atoi(numTrainsStr)
 	if err != nil || numTrains <= 0 {
-		fmt.Fprintln(os.Stderr, "Error: the number of trains is not a valid positive integer")
+		fmt.Fprintln(os.Stderr, "Error: Invalid number of trains")
 		os.Exit(1)
 	}
 
 	if startStation == endStation {
-		fmt.Fprintln(os.Stderr, "Error: the start and end station are the same")
+		fmt.Fprintln(os.Stderr, "Error: Start and end station are the same")
 		os.Exit(1)
 	}
 
@@ -51,23 +51,23 @@ func main() {
 	}
 
 	if _, exists := graph.Stations[startStation]; !exists {
-		fmt.Fprintln(os.Stderr, "Error: the start station does not exist")
+		fmt.Fprintln(os.Stderr, "Error: Start station does not exist")
 		os.Exit(1)
 	}
 	if _, exists := graph.Stations[endStation]; !exists {
-		fmt.Fprintln(os.Stderr, "Error: the end station does not exist")
+		fmt.Fprintln(os.Stderr, "Error: End station does not exist")
 		os.Exit(1)
 	}
 
 	// Discover node and edge disjoint paths ensuring absolute efficiency
-	paths, err := algo.FindDisjointPaths(graph, startStation, endStation)
+	paths, err := algo.FindDisjointPaths(graph, startStation, endStation, numTrains)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "Error: %v\n", err)
 		os.Exit(1)
 	}
 
 	if len(paths) == 0 {
-		fmt.Fprintln(os.Stderr, "Error: no path exists between the start and end stations")
+		fmt.Fprintln(os.Stderr, "Error: No path exists between the start and end stations")
 		os.Exit(1)
 	}
 

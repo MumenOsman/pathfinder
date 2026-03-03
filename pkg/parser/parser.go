@@ -52,7 +52,7 @@ func ParseNetwork(r io.Reader) (*model.Graph, error) {
 			parts := strings.Split(line, ",")
 			if len(parts) != 3 {
 				// Station formats are strictly predefined as name,x,y
-				return nil, fmt.Errorf("line %d: invalid station line: %s", lineNumber, line)
+				return nil, fmt.Errorf("Line %d: Invalid station line format", lineNumber)
 			}
 			name := strings.TrimSpace(parts[0])
 			xStr := strings.TrimSpace(parts[1])
@@ -60,51 +60,51 @@ func ParseNetwork(r io.Reader) (*model.Graph, error) {
 
 			x, err := strconv.Atoi(xStr)
 			if err != nil || x < 0 {
-				return nil, fmt.Errorf("line %d: any coordinates which are not a valid positive integer: %s", lineNumber, xStr)
+				return nil, fmt.Errorf("Line %d: Any coordinates which are not a valid positive integer", lineNumber)
 			}
 			y, err := strconv.Atoi(yStr)
 			if err != nil || y < 0 {
-				return nil, fmt.Errorf("line %d: any coordinates which are not a valid positive integer: %s", lineNumber, yStr)
+				return nil, fmt.Errorf("Line %d: Any coordinates which are not a valid positive integer", lineNumber)
 			}
 
 			// Validate name format
 			for _, r := range name {
 				if !unicode.IsLetter(r) && !unicode.IsDigit(r) && r != '_' {
-					return nil, fmt.Errorf("line %d: invalid station names: %s", lineNumber, name)
+					return nil, fmt.Errorf("Line %d: Invalid station names", lineNumber)
 				}
 			}
 
 			// Validate spatial coordinate uniqueness across the station grid
 			coordKey := xStr + "," + yStr
 			if coordMap[coordKey] {
-				return nil, fmt.Errorf("line %d: two stations exist at the exact same coordinate location: %s", lineNumber, coordKey)
+				return nil, fmt.Errorf("Line %d: Two stations exist at the exact same coordinate location", lineNumber)
 			}
 			coordMap[coordKey] = true
 
 			err = graph.AddStation(name, x, y)
 			if err != nil {
-				return nil, fmt.Errorf("line %d: duplicate station names: %s", lineNumber, name)
+				return nil, fmt.Errorf("Line %d: %v", lineNumber, err) // Re-use the underlying exact struct error message from model.go
 			}
 
 			// Graph limitation constraints per project topology rules
 			if len(graph.Stations) > 10000 {
-				return nil, fmt.Errorf("line %d: a map contains more than 10000 stations", lineNumber)
+				return nil, fmt.Errorf("Line %d: A map contains more than 10000 stations", lineNumber)
 			}
 
 		} else if mode == "connections" {
 			parts := strings.Split(line, "-")
 			if len(parts) != 2 {
-				return nil, fmt.Errorf("line %d: invalid connection line: %s", lineNumber, line)
+				return nil, fmt.Errorf("Line %d: Invalid connection line", lineNumber)
 			}
 			from := strings.TrimSpace(parts[0])
 			to := strings.TrimSpace(parts[1])
 
 			err := graph.AddConnection(from, to)
 			if err != nil {
-				return nil, fmt.Errorf("line %d: %v", lineNumber, err)
+				return nil, fmt.Errorf("Line %d: %v", lineNumber, err)
 			}
 		} else {
-			return nil, fmt.Errorf("line %d: invalid data before sections: %s", lineNumber, line)
+			return nil, fmt.Errorf("Line %d: Invalid data before sections", lineNumber)
 		}
 	}
 
@@ -113,10 +113,10 @@ func ParseNetwork(r io.Reader) (*model.Graph, error) {
 	}
 
 	if !hasStationsSection {
-		return nil, errors.New("the map does not contain a 'stations:' section")
+		return nil, errors.New("The map does not contain a 'stations:' section")
 	}
 	if !hasConnectionsSection {
-		return nil, errors.New("the map does not contain a 'connections:' section")
+		return nil, errors.New("The map does not contain a 'connections:' section")
 	}
 
 	return graph, nil
